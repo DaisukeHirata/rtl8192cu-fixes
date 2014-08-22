@@ -70,6 +70,7 @@ CONFIG_PLATFORM_MSTAR_TITANIA12 = n
 CONFIG_PLATFORM_MSTAR_A3 = n
 CONFIG_PLATFORM_ARM_SUNxI = n
 CONFIG_PLATFORM_ARM_SUN6I = n
+CONFIG_PLATFORM_ARM_BCM2708 = y
 
 CONFIG_DRVEXT_MODULE = n
 
@@ -522,6 +523,19 @@ ARCH := arm
 CROSS_COMPILE := arm-none-linux-gnueabi-
 KVER  := 3.3.0
 #KSRC:= ../lichee/linux-3.3/
+endif
+
+#
+# Going to assume this isn't being built on the RPi, but being cross compiled
+#
+ifeq ($(CONFIG_PLATFORM_ARM_BCM2708), y)
+EXTRA_CFLAGS += -DCONFIG_LITTLE_ENDIAN
+ARCH = arm
+KVER := $(shell uname -r)
+CROSS_COMPILE ?=  
+MODDESTDIR := $(INSTALL_MOD_PATH)/lib/modules/$(KVER)+/kernel/drivers/net/wireless/
+KSRC := /lib/modules/$(KVER)/build
+DEPMOD_CMD :=
 endif
 
 ifneq ($(USER_MODULE_NAME),)
